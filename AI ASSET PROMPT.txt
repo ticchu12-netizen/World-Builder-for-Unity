@@ -1,0 +1,144 @@
+# Asset Generation Prompt
+
+Do not have 3D models yet? Paste the prompt below into an AI that can write and run Blender Python (most can, and several free ones work too). It will generate a full set of low-poly models that drop straight into the World Builder's slots.
+
+How to use it:
+
+1. Open an AI chat that can run code or write Blender scripts.
+2. Copy everything in the box below.
+3. Paste it in. If the AI asks about style or theme, answer, or just tell it to use the defaults.
+4. It gives you a Blender script (or a set of model files). Run the script in Blender, then export the models as FBX or GLB and bring them into Unity.
+5. In Unity, drop each model into the matching World Builder slot.
+
+You can change the theme. Where the prompt says "forest," swap in "beach," "volcano," "desert," "graveyard," or anything else, and ask it to match the colors and shapes to that theme.
+
+---
+
+## The prompt (copy everything below)
+
+```
+I am making low-poly 3D models for a Unity world-building tool. I need a full set
+of simple, clean, stylized models in a single consistent art style. Please write a
+Blender Python script that builds all of the models listed below and lays them out
+in a grid so I can see them. Keep them low-poly and readable, in the style of a
+cute stylized adventure game (think soft rounded shapes, flat bright colors).
+
+THEME: forest. (If I want a different theme later I will tell you. Match the colors
+and shapes to the theme.)
+
+IMPORTANT RULES, please follow all of them:
+
+1. Every model's origin point (pivot) must sit at the BASE of the model, centered on
+   the ground, not in the middle of the model. The bottom of the model should be at
+   Z = 0 in its local space. This matters because the tool places models on the
+   ground by their base.
+
+2. Use as few materials as possible. Ideally share ONE material across most models,
+   using vertex colors for variation if you can. This lets the game batch them
+   together and run fast. If you must use more than one material, keep it to a
+   small handful.
+
+3. Keep polygon counts low. These are background and set-piece props, not hero
+   assets. A few hundred to a couple thousand triangles each is plenty.
+
+4. Use smooth shading where it helps the rounded look, and keep shapes simple and
+   chunky rather than detailed.
+
+5. Name each object clearly using the names I give below, so I know which slot each
+   one goes into. Use the EXACT names as a prefix (for example "TallVegetation_01",
+   "PathTile_01", "Wall_02"). This exact naming lets my Unity tool auto-sort them.
+
+6. After building everything, AUTOMATICALLY EXPORT every model to a folder. Do not
+   make me export them one by one. Create a folder (for example a "WorldBuilderAssets"
+   folder next to the .blend file, or ask me for a path), and export each object as
+   its own GLB file into that folder, named exactly as the object is named. Use GLB
+   with these settings: apply transforms so the base pivot is preserved at the origin,
+   embed textures, and export each object separately so I get one file per model.
+   If GLB per-object is not practical, export one GLB or FBX containing everything,
+   but separate files named by slot are strongly preferred because my tool reads them
+   by file name.
+
+Please make ALL of the following. Make 2 or 3 variations of the ones marked
+"(make a few)" so there is variety.
+
+SCATTER AND ENVIRONMENT MODELS:
+
+- TallVegetation (make a few): the big upright plants. For forest, these are trees of
+  a few different shapes and heights.
+- MidVegetation (make a few): medium plants. Bushes and shrubs.
+- GroundCover (make a few): small ground plants you walk over. Grass tufts, ferns,
+  small sprouts.
+- ScatterDetail (make a few): small clutter on the ground. Rocks, fallen logs,
+  tree stumps, sticks.
+- Flowers (make a few): small colorful flowers in a couple of colors.
+- Boundary (make a few): the big pieces that wall off the edge of the area. Cliff
+  chunks or large boulders that can sit side by side to form a barrier.
+- Landmark (make 1 or 2): a tall, distinctive standout object that marks a location.
+  Something a player would navigate by, like a giant old tree, a stone obelisk, or
+  a statue.
+- PathTile: a single flat tile for making paths. A dirt or worn-ground square that
+  can tile next to copies of itself.
+- Platform (make a few): raised ground pieces, like low hills or rock shelves, used
+  for elevation and to block sightlines.
+- Treasure: a treasure chest, and a small pickup like a gem or coin.
+- Prop (make a few): general decoration. A pot, a crate, a barrel, a wooden sign.
+- Fence: a single fence section that connects seamlessly to copies of itself placed
+  next to it. Model it so it stretches along its local X axis (left to right when you
+  look at it head on), like a normal fence panel.
+- Candle: a small candle or torch, something you would place at an entrance.
+
+STRUCTURE PIECES (for assembling boss arenas, treasure rooms, dungeon entrances,
+and shrines):
+
+- Floor: a flat round or square floor piece for the inside of an arena.
+- Wall: a wall segment that can be placed in a ring to enclose an arena. Model it so
+  it faces forward along its local Z, with the long side running left to right.
+- Column: a tall pillar or column.
+- Gate: an archway or gateway, two posts with a top across them, that a player walks
+  through. It should face forward.
+- Stairs: a short flight of steps that climbs forward.
+- CenterFeature: a pedestal or altar that sits in the middle of an arena, where a
+  boss or reward would be.
+- Brazier: a fire bowl or torch stand, for flanking entrances and columns.
+- Banner: a hanging banner or flag that decorates a wall or column.
+- Rubble: small broken debris chunks for scattering around.
+- Pedestal: a small raised stand (used to put a chest or idol on).
+- Chest: a treasure chest (you can reuse the Treasure chest if you like).
+- Statue: a guardian statue for flanking a dungeon door.
+- Door: a dungeon door or dark portal slab.
+- Idol: a small idol or sacred object for a shrine.
+- RingStone (make a few): small standing stones for circling a shrine.
+- Offering (make a few): tiny offering props, like bowls or small piles.
+
+When you are done, remember to run the automatic export from rule 6 so all of these
+are saved out as GLB files into a folder, each named to match its object. Then tell me
+the folder path you exported to, and confirm the base pivots and materials were kept.
+If you could not export automatically for any reason, tell me why and give me the exact
+steps to export them myself.
+```
+
+---
+
+## After you generate them
+
+1. Run the script in Blender. It builds everything and exports the models to a folder
+   automatically (named by slot).
+2. Copy that folder of models into your Unity project, somewhere under Assets.
+3. In the World Builder window, make sure your Biome is selected, then click
+   **Auto-Fill Biome From Folder** and pick that folder. The tool reads the file names
+   and drops each model into the correct slot for you. No manual dragging.
+4. For structure pieces (walls, columns, gates, and so on), open a Structure Template
+   and use its auto-fill the same way, or drag the structure models in by hand.
+
+Because the prompt names everything by slot, the auto-fill lands almost everything in
+the right place. Anything it cannot match by name (a handful, maybe) you can drag in
+yourself.
+
+If a model sits too high or too low when you generate, adjust the **Y Offset** on that
+slot, or fix the pivot in Blender and re-export.
+
+---
+
+## Want a different theme?
+
+Just change the THEME line in the prompt and tell the AI to match the look. The slot names stay the same, only the art changes. That way a beach set and a volcano set both drop into the same slots, and you can swap whole themes by swapping Biomes.

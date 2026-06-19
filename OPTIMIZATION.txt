@@ -1,0 +1,126 @@
+# Making It Run Fast
+
+The tool can place thousands of objects. That looks great, but without a few settings,
+all those objects can slow your game down. The good news is that most of the speed
+comes from one or two simple toggles. This guide goes from "do this first" to
+"advanced, only if you need it."
+
+You do not have to do all of this. Start at the top. Most projects only need the first
+two things.
+
+---
+
+## 1. Turn on GPU Instancing (do this first, biggest win)
+
+This is the single most important setting. It lets the graphics card draw hundreds of
+copies of the same object in one go, instead of one at a time.
+
+How to turn it on:
+
+1. Find the materials your models use.
+2. Click a material.
+3. In the Inspector, tick the **Enable GPU Instancing** checkbox.
+
+Do this for every material your scattered objects use. If you used the asset prompt and
+shared one material across your models, you only have to do this once. This is why the
+prompt asks for a shared material: it makes instancing easy and your scene fast.
+
+If your scene is slow and you only do one thing from this guide, do this.
+
+---
+
+## 2. Mark scenery as Static (second biggest win)
+
+Objects that never move can be "batched" together by Unity, which means fewer draw
+calls and better speed.
+
+After you generate, the tool puts everything under a "WORLD_GENERATED" object in your
+scene. To mark it all static:
+
+1. Click WORLD_GENERATED in the Hierarchy.
+2. In the Inspector, top right, tick the **Static** checkbox.
+3. When it asks, choose **Yes, change children** so everything inside gets marked too.
+
+Now Unity can batch your scenery. Note: only do this for things that do not move. Your
+player and enemies should NOT be static.
+
+---
+
+## 3. Use the GPU Resident Drawer (Unity 6, great for big worlds)
+
+If you are on Unity 6 with URP, there is a modern feature that draws huge numbers of
+objects very efficiently. It is built for exactly this kind of scene.
+
+To turn it on:
+
+1. Find your URP settings. Edit > Project Settings > Graphics, then open your
+   Render Pipeline Asset, or look under Quality settings for the URP asset.
+2. Look for **GPU Resident Drawer** and set it to **Instanced Drawing**.
+3. There is usually a related setting to enable it on your renderer too. Turn that on.
+
+This works best together with GPU Instancing from step 1. On a big generated world, this
+can be a large speed boost. If you are on an older Unity version and do not see this
+option, skip it. Steps 1 and 2 still carry you a long way.
+
+---
+
+## 4. Keep object counts sensible
+
+The simplest speed lever is just placing fewer things. You rarely need a tree every few
+feet for a scene to look full.
+
+In the tool:
+
+- **Density**: lower it. A lot of forests look great at 0.3 to 0.6.
+- **Scatter Budget**: this caps the total scattered objects. Keep it at a number your
+  machine handles. If you hit the cap, the Console tells you.
+- **Path Tile Spacing**: bigger spacing means fewer path tiles. On large maps this
+  matters a lot.
+
+Generate, look, and only turn density up if it still looks sparse and your frame rate
+is fine.
+
+---
+
+## 5. Add LODs for distant objects (advanced)
+
+LOD means "Level of Detail." It swaps a model for a simpler, cheaper version when it is
+far from the camera, and hides it entirely when it is very far. For a big open world
+this is a real win, but it takes setup and you need simpler versions of your models.
+
+This is optional and more advanced. If your world runs fine after steps 1 to 4, you do
+not need it. If you have a very large, very dense world and still need more speed, look
+up "Unity LOD Group" and add LOD Groups to your heaviest models (usually the trees).
+
+---
+
+## 6. Turn colliders off where you do not need them
+
+Colliders cost performance, both to create and to run. The tool lets you turn them off.
+
+- While building and previewing, keep **Add Colliders** off. You do not need collision
+  to see if the layout looks good.
+- When you do want collision, you often only need it on the big things: trees, walls,
+  rocks you bump into. You do not need a collider on every blade of grass or flower.
+
+---
+
+## A simple plan for most people
+
+1. Turn on GPU Instancing on your materials. (Step 1.)
+2. Generate your world, then mark WORLD_GENERATED as Static. (Step 2.)
+3. If you are on Unity 6, turn on the GPU Resident Drawer. (Step 3.)
+4. Keep density reasonable. (Step 4.)
+
+That covers the vast majority of cases. Steps 5 and 6 are there for when you are pushing
+a really big world and need every last bit of speed.
+
+---
+
+## How to tell if it worked
+
+Open the Game view and turn on **Stats** (the button in the top right of the Game view).
+Watch the **Batches** number. Lower is better. After turning on GPU Instancing and Static
+batching, you should see that number drop a lot compared to before. If it is still very
+high, double-check that your materials actually have instancing ticked and that the
+scenery is marked static.
